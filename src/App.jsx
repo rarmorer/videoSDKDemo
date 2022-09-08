@@ -11,8 +11,6 @@ import VideoContainer from './Feature/Video/Video';
 
 import Home from './Feature/Home/home.jsx'
 
-// import Video from './feature/video/Video';
-
 const mediaShape = {
   audio: {
     encode: false,
@@ -89,9 +87,6 @@ function App(props) {
       {!loading && (
         <MediaContext.Provider value = {mediaContext}>
           <Router>
-          {/* <header className="App-header">
-              Welcome to Zoom VideoSDK
-          </header> */}
           <Routes>
           <Route path = "/" element = {<Home props={props}/>}/>
           <Route path = "/video" element = {<VideoContainer/>} />
