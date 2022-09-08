@@ -7,7 +7,8 @@ import ZoomVideo, { ConnectionState } from '@zoom/videosdk';
 import ZoomContext from './context/zoom-context';
 import MediaContext from './context/media-context';
 import LoadingLayout from './Feature/Loading/loading-layout';
-import VideoContainer from './Feature/Preview/Preview';
+import VideoContainer from './Feature/Video/Video';
+
 import Home from './Feature/Home/home.jsx'
 
 // import Video from './feature/video/Video';
@@ -45,6 +46,7 @@ const mediaReducer = produce((draft, action) => {
   }
   //is this second argument the 'recipe'?
 }, mediaShape)
+
 function App(props) {
   const {
     meetingArgs: { sdkKey, topic, signature, name, password, enforceGalleryView }
