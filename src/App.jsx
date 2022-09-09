@@ -8,42 +8,42 @@ import ZoomContext from './context/zoom-context';
 import MediaContext from './context/media-context';
 import LoadingLayout from './Feature/Loading/loading-layout';
 import VideoContainer from './Feature/Video/Video';
-
+import Chat from './Feature/Chat/Chat';
 import Home from './Feature/Home/home.jsx'
 
-const mediaShape = {
-  audio: {
-    encode: false,
-    decode: false
-  },
-  video: {
-    encode: false,
-    decode: false
-  },
-}
+// const mediaShape = {
+//   audio: {
+//     encode: false,
+//     decode: false
+//   },
+//   video: {
+//     encode: false,
+//     decode: false
+//   },
+// }
 
-const mediaReducer = produce((draft, action) => {
-  switch(action.type) {
-    case 'audio-encode': {
-      draft.audio.encode = action.payload;
-      break;
-    }
-    case 'audio-decode': {
-      draft.audio.decode = action.payload;
-      break;
-    }
-    case 'video-encode': {
-      draft.video.encode = action.payload;
-      break;
-    }
-    case 'video-decode': {
-      draft.video.encode = action.payload;
-      break;
-    }
-    default: break;
-  }
-  //is this second argument the 'recipe'?
-}, mediaShape)
+// const mediaReducer = produce((draft, action) => {
+//   switch(action.type) {
+//     case 'audio-encode': {
+//       draft.audio.encode = action.payload;
+//       break;
+//     }
+//     case 'audio-decode': {
+//       draft.audio.decode = action.payload;
+//       break;
+//     }
+//     case 'video-encode': {
+//       draft.video.encode = action.payload;
+//       break;
+//     }
+//     case 'video-decode': {
+//       draft.video.encode = action.payload;
+//       break;
+//     }
+//     default: break;
+//   }
+//   //is this second argument the 'recipe'?
+// }, mediaShape)
 
 function App(props) {
   const {
@@ -53,9 +53,9 @@ function App(props) {
   // const [isSupportGalleryView, setIsSupportGalleryView] = useState(true);
   const [loading, setIsLoading] = useState(true);
   const [loadingText, setLoadingText] = useState('');
-  const [mediaState, dispatch] = useReducer(mediaReducer, mediaShape);
+  // const [mediaState, dispatch] = useReducer(mediaReducer, mediaShape);
   const [mediaStream, setMediaStream] = useState();
-  const mediaContext = useMemo(() => ({...mediaState, mediaStream}), [mediaState, mediaStream])
+  // const mediaContext = useMemo(() => ({...mediaState, mediaStream}), [mediaState, mediaStream])
   const client = useContext(ZoomContext);
   
   useEffect(() => {
@@ -85,14 +85,15 @@ function App(props) {
     <div className="App">
       {loading && <LoadingLayout content = {loadingText}/>}
       {!loading && (
-        <MediaContext.Provider value = {mediaContext}>
+        // <MediaContext.Provider value = {mediaContext}>
           <Router>
           <Routes>
           <Route path = "/" element = {<Home props={props}/>}/>
           <Route path = "/video" element = {<VideoContainer/>} />
+          <Route path = "/chat" element = {<Chat/>} />
           </Routes>
           </Router>
-        </MediaContext.Provider>
+        // </MediaContext.Provider>
       )}
     </div>
   );
