@@ -1,11 +1,10 @@
 import { KJUR } from 'jsrsasign';
 
 export const generateVideoToken = (sdkKey, sdkSecret, topic, passWord = '', sessionKey = '', userIdentity = '', roleType = 1) => {
-    console.log('generate called')
     let signature = '';
     try {
         const iat = Math.round(new Date().getTime() / 1000);
-        const exp = iat + 60 * 60 *2;
+        const exp = iat + 60 * 60 * 2;
 
         const oHeader = { alg: 'HS256', typ: 'JWT' };
         

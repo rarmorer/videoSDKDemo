@@ -1,64 +1,30 @@
 import './App.css';
-import React, { useEffect, useContext, useState, useCallback, useReducer, useMemo } from 'react';
+import React, { useEffect, useContext, useState, useCallback } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { message, Modal } from 'antd';
-import produce from 'immer';
+import 'antd/dist/antd.min.css';
 import ZoomVideo, { ConnectionState } from '@zoom/videosdk';
 import ZoomContext from './context/zoom-context';
 import MediaContext from './context/media-context';
 import LoadingLayout from './Feature/Loading/loading-layout';
 import VideoContainer from './Feature/Video/Video';
-import Chat from './Feature/Chat/Chat';
 import Home from './Feature/Home/home.jsx'
 
-// const mediaShape = {
-//   audio: {
-//     encode: false,
-//     decode: false
-//   },
-//   video: {
-//     encode: false,
-//     decode: false
-//   },
-// }
-
-// const mediaReducer = produce((draft, action) => {
-//   switch(action.type) {
-//     case 'audio-encode': {
-//       draft.audio.encode = action.payload;
-//       break;
-//     }
-//     case 'audio-decode': {
-//       draft.audio.decode = action.payload;
-//       break;
-//     }
-//     case 'video-encode': {
-//       draft.video.encode = action.payload;
-//       break;
-//     }
-//     case 'video-decode': {
-//       draft.video.encode = action.payload;
-//       break;
-//     }
-//     default: break;
-//   }
-//   //is this second argument the 'recipe'?
-// }, mediaShape)
-
-function App(props) {
+const App = (props) => {
   const {
-    meetingArgs: { sdkKey, topic, signature, name, password, enforceGalleryView }
+    meetingArgs: { sdkKey, topic, signature, name, password }
   } = props;
 
-  // const [isSupportGalleryView, setIsSupportGalleryView] = useState(true);
   const [loading, setIsLoading] = useState(true);
   const [loadingText, setLoadingText] = useState('');
-  // const [mediaState, dispatch] = useReducer(mediaReducer, mediaShape);
+  const [isFailOver, setIsFailOver] = useState(false);
   const [mediaStream, setMediaStream] = useState();
-  // const mediaContext = useMemo(() => ({...mediaState, mediaStream}), [mediaState, mediaStream])
+  const [status, setStatus] = useState(false);
+
   const client = useContext(ZoomContext);
   
   useEffect(() => {
+    console.log(props.meetingArgs)
     const init = async () => {
       await client.init('en-US', 'CDN')
     
@@ -81,19 +47,63 @@ function App(props) {
     }
     }, [sdkKey, signature, client, topic, name, password])
 
+  const onConnectionChange = useCallback (
+    (payload) => {
+      if (payload.state === ConnectionState.Reconnecting) {
+        setIsLoading(true);
+        setIsFailOver(true);
+        setStatus('connecting');
+        const { reason } = payload;
+        if (reason === 'failover') {
+          setLoadingText("Session disconnected, trying to reconnect");
+          }
+       } else if (payload.state === ConnectionState.Connected) {
+          setStatus('connected');
+          if (isFailOver) {
+            setIsLoading(false);
+          }
+        } else if (payload.state === ConnectionState.Closed) {
+          setStatus('closed');
+          if (payload.reason === 'ended by host') {
+            Modal.warning({
+              title: "Meeting ended", 
+              content: "This meeting has been ended by the host"
+            });
+          }
+        }
+      }, [isFailOver]
+  )
+
+  useEffect(() => {
+    client.on('connection-change', onConnectionChange);
+    return () => {
+      client.off('connection-change', onConnectionChange)
+    }
+  }, [client, onConnectionChange])
+  
+  const onLeaveOrJoin = useCallback(async () => {
+    if (status === 'closed') {
+      setIsLoading(true);
+      await client.join(topic, signature, name, password);
+      setIsLoading(false);
+    } else if (status === 'connected') {
+      await client.leave();
+      message.warn('You have left the session.')
+    }
+  }, [client, status, topic, signature, name, password])
+
   return (
     <div className="App">
       {loading && <LoadingLayout content = {loadingText}/>}
       {!loading && (
-        // <MediaContext.Provider value = {mediaContext}>
+        <MediaContext.Provider value = {mediaStream}>
           <Router>
           <Routes>
-          <Route path = "/" element = {<Home props={props}/>}/>
+          <Route path = "/" element = {<Home props={props} status = {status} onLeaveOrJoin = {onLeaveOrJoin}/>}/>
           <Route path = "/video" element = {<VideoContainer/>} />
-          <Route path = "/chat" element = {<Chat/>} />
           </Routes>
           </Router>
-        // </MediaContext.Provider>
+         </MediaContext.Provider>
       )}
     </div>
   );
