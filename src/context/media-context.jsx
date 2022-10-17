@@ -1,4 +1,4 @@
-import { MediaStream } from '@zoom/videosdk';
+// import { MediaStream } from '@zoom/videosdk';
 import React from 'react';
 
-export default React.createContext(MediaStream);
+export default React.createContext();

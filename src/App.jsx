@@ -16,7 +16,7 @@ const App = (props) => {
   } = props;
 
   const [loading, setIsLoading] = useState(true);
-  const [loadingText, setLoadingText] = useState('');
+  const [loadingText, setLoadingText] = useState(' ');
   const [isFailOver, setIsFailOver] = useState(false);
   const [mediaStream, setMediaStream] = useState();
   const [status, setStatus] = useState(false);
@@ -24,7 +24,6 @@ const App = (props) => {
   const client = useContext(ZoomContext);
   
   useEffect(() => {
-    console.log(props.meetingArgs)
     const init = async () => {
       await client.init('en-US', 'CDN')
     
@@ -82,7 +81,7 @@ const App = (props) => {
   }, [client, onConnectionChange])
   
   const onLeaveOrJoin = useCallback(async () => {
-    if (status === 'closed') {
+    if (status === 'use ') {
       setIsLoading(true);
       await client.join(topic, signature, name, password);
       setIsLoading(false);

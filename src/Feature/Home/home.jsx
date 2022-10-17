@@ -28,7 +28,7 @@ const Home = (props) => {
 
     return (
       <div>
-        <div className="nav">
+        {/* <div className="nav">
             <span>Zoomtompia22</span>
            {statusMessage && (
             <Button 
@@ -38,7 +38,7 @@ const Home = (props) => {
               {statusMessage}
             </Button>
            )}
-        </div>
+        </div> */}
         <div className="home">
           <h1>Zoom Video SDK feature</h1>
           <div className="feature-entry">
