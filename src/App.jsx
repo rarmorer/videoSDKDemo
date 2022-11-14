@@ -24,6 +24,7 @@ const App = (props) => {
   const client = useContext(ZoomContext);
   
   useEffect(() => {
+    console.log(props.meetingArgs)
     const init = async () => {
       await client.init('en-US', 'CDN')
     

@@ -25,13 +25,16 @@
         if (!videoStarted) {
             if (!!window.chrome && !(typeof SharedArrayBuffer ==='function')) {
                 setIsSAB(false);
-                await mediaStream.startVideo({videoElement: document.querySelector('#self-view-video')}, client.getCurrentUserInfo().usesrId)
+                await mediaStream.startVideo({videoElement: document.querySelector('#self-view-video')})
             } else {
                 setIsSAB(true);
                 await mediaStream.startVideo();
                 mediaStream.renderVideo(document.querySelector('#self-view-canvas'), client.getCurrentUserInfo().userId, 1920, 1080, 0, 0, 3)
             }
             setVideoStarted(true)
+            // setIsSAB(true);
+            //      await mediaStream.startVideo();
+            //      mediaStream.renderVideo(document.querySelector('#self-view-canvas'), client.getCurrentUserInfo().userId, 1920, 1080, 0, 0, 3)
         } else {
             await mediaStream.stopVideo();
             if (isSAB) {

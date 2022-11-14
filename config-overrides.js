@@ -15,7 +15,8 @@ const addDevServerCOOPReponseHeader = (config) => {
 };
 
 module.exports = {
-  webpack: override(
+  webpack: 
+    override(
     addWebpackPlugin(
       new CopyPlugin({
         patterns: [
@@ -27,5 +28,6 @@ module.exports = {
       })
     )
   ),
-  devServer: overrideDevServer(addDevServerCOOPReponseHeader)
+  devServer: overrideDevServer(addDevServerCOOPReponseHeader), 
+
 };

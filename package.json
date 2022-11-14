@@ -6,6 +6,7 @@
     "@ant-design/icons": "^4.7.0",
     "@zoom/videosdk": "^1.4.1",
     "antd": "^4.22.8",
+    "express": "^4.18.2",
     "fs": "^0.0.1-security",
     "jsrsasign": "^10.5.27",
     "os": "^0.1.2",
@@ -43,6 +44,7 @@
       "not dead",
       "not op_mini all"
     ],
+    "proxy": "http://localhost:3001",
     "development": [
       "last 1 chrome version",
       "last 1 firefox version",

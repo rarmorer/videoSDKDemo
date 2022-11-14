@@ -9,16 +9,33 @@ import ZoomVideo from '@zoom/videosdk';
 
 let meetingArgs = {...devConfig};
 
+// if (!meetingArgs.signature && meetingArgs.sdkSecret && meetingArgs.topic) {
+//   meetingArgs.signature = generateVideoToken(
+//     meetingArgs.sdkKey,
+//     meetingArgs.sdkSecret,
+//     meetingArgs.topic,
+//     meetingArgs.password,
+//     meetingArgs.userIdentity,
+//     meetingArgs.sessionKey,
+//     meetingArgs.role
+//   );
+// }
+
+const getToken = async({options}) => {
+  let result; 
+  result = await fetch("http://localhost:3001", options);
+  result = await result.json();
+  return result;
+ 
+}
+
 if (!meetingArgs.signature && meetingArgs.sdkSecret && meetingArgs.topic) {
-  meetingArgs.signature = generateVideoToken(
-    meetingArgs.sdkKey,
-    meetingArgs.sdkSecret,
-    meetingArgs.topic,
-    meetingArgs.password,
-    meetingArgs.userIdentity,
-    meetingArgs.sessionKey,
-    meetingArgs.role
-  );
+  const requestOptions = {
+    method: 'POST',
+    headers: {'Content-Type' : 'application/json'},
+    body: JSON.stringify({meetingArgs}) 
+  }
+  meetingArgs.signature = getToken(requestOptions);
 }
 
 const client = ZoomVideo.createClient();
